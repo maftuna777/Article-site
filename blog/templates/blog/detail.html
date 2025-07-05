@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+{{title}}
+{% endblock title %}
+{% block main %}
+<div class = "container">
+    <nav class="nav my-3 gap-3 justify-content-end">
+  <a class="btn btn-light" href="{% url 'home' %}">BACK</a>
+  <a class="btn btn-light" href="{% url 'update' article.pk %}">EDIT</a>
+  <a class="btn btn-light" href="{% url 'delete' article.pk %}">DELETE</a>
+</nav>
+    <div class="card mb-3">
+  <img src="{{ article.get_photo }}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{ article.title }}</h5>
+    <p class="card-text">{{ article.info }}</p>
+    <p class="card-text"><small class="text-body-secondary">{{ article.updated_at }}</small></p>
+  </div>
+</div>
+  {% if request.user.is_authenticated %}
+  <div class="my-3">
+    <h3>Write your comment</h3>
+    <form action="{% url 'comment' article.pk %}" method="post">
+      {% csrf_token %}
+      {{comment_form.as_p}}
+      <button class="btn btn-primary" type="submit">Send</button>
+    </form>
+  </div>
+  {% endif %}
+  {% for comment in comments %}
+<div class="card mb-3">
+  <div class="card-header">
+    {{comment.user.username}}
+  </div>
+  <div class="card-body">
+    <figure>
+      <blockquote class="blockquote">
+        <p>{{comment.text}}</p>
+      </blockquote>
+      <figcaption class="blockquote-footer">
+       <cite title="Source Title">{{comment.created_at}}</cite>
+      </figcaption>
+    </figure>
+  </div>
+</div>
+  {% endfor %}
+</div>
+{% endblock main %}
